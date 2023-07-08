@@ -1,0 +1,361 @@
+@use "sass:math";
+
+// Подключение миксинов ===========================================================================================================================================================================================================================================================================
+@import "base/mixins";
+
+// Подключение шрифтов ===========================================================================================================================================================================================================================================================================
+//&display=swap - добавить при подключении через плагин
+@import url(https://fonts.googleapis.com/css?family=Work+Sans:200,300,regular,500&display=swap);
+@import url(https://fonts.googleapis.com/css?family=PT+Sans:regular&display=swap);
+
+// Подключить если есть локальные файлы шрифтов
+@import "fonts/fonts";
+
+// Подключение иконочных шрифтов ==============================================================================================================================================================================================================================================================================
+// Подключить если есть файл иконочного шрифта
+@import "fonts/icons";
+
+// Шрифт по умолчанию ==============================================================================================================================================================================================================================================================================
+$fontFamily: "Work Sans";
+$fontSize: rem(14); // где 14(px) - размер шрифта по умолчанию из макета
+
+// Основные цвета
+$mainColor: #111; // Цвет шрифта по умолчанию
+$grayColor: #7c7c7c; // Серый цвет
+$blueColor: #5a61ed; // Синий цвет
+
+// НАСТРОЙКИ ===============================================================================================================================================================================================================================================================================================
+// Минимальная ширина страницы
+$minWidth: 320;
+// Ширина полотна (макета)
+$maxWidth: 800;
+// Ширина ограничивающего контейнера (0 = нет ограничения)
+$maxWidthContainer: 665;
+// Общий отступ у контейнера
+// (30 = по 15px слева и справа, 0 = нет отступа)
+$containerPadding: 30;
+
+// Ширина срабатывания первого брейкпоинта
+$containerWidth: $maxWidthContainer + $containerPadding;
+
+// Брейк-поинты
+$pc: em($containerWidth); // ПК, ноутбуки, некоторые планшеты в горизонтальном положении
+$tablet: em(991.98); // Планшеты, некоторые телефоны в горизонтальном положении
+$mobile: em(767.98); // Телефоны L
+$mobileSmall: em(479.98); // Телефоны S
+
+// Тип адаптива:
+// 1 = отзывчивость (у контейнера нет брейкпоинтов),
+// 2 = по брейк-поинтам (контейнер меняет свою ширину по брейк-поинтам)
+$responsiveType: 1;
+
+// Обнуление и общие параметры ============================================================================================================================================================================================== =============================================================================================== ===============================================================================================
+@import "base/null";
+
+body {
+	// Скролл заблокирован
+	.lock & {
+		overflow: hidden;
+		touch-action: none;
+	}
+	// Сайт загружен
+	.loaded & {
+	}
+}
+// Оболочка ============================================================================================================================================================================================================================================================================================================================================================================================================================================
+.wrapper {
+	min-height: 100%;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	// Прижимаем footer
+	> main {
+		flex: 1 1 auto;
+	}
+	// Фикс для слайдеров
+	> * {
+		min-width: 0;
+	}
+}
+// Ограничивающий контейнер ======================================================================================================================================================================================================================
+
+/*
+(i) Стили будут применяться ко 
+всем классам содержащим *__container
+Например header__container, main__container и т.д.
+Снипет (HTML): cnt
+*/
+@if ($responsiveType==1) {
+	// Отзывчивая
+	[class*="__container"] {
+		@if ($maxWidthContainer>0) {
+			max-width: rem($maxWidthContainer);
+			box-sizing: content-box;
+			margin: 0 auto;
+		}
+		@if ($containerPadding>0) {
+			padding: 0 rem(math.div($containerPadding, 2));
+		}
+	}
+} @else {
+	// По брейк-поинтам
+	[class*="__container"] {
+		margin: 0 auto;
+		@if ($maxWidthContainer>0) {
+			max-width: rem($maxWidthContainer);
+			box-sizing: content-box;
+		} @else {
+			@if ($containerPadding>0) {
+				padding: 0 rem(math.div($containerPadding, 2));
+			}
+		}
+		@media (max-width: $pc) {
+			max-width: rem(970);
+		}
+		@media (max-width: $tablet) {
+			max-width: rem(750);
+		}
+		@media (max-width: $mobile) {
+			max-width: none;
+			@if ($containerPadding>0 and $maxWidthContainer>0) {
+				padding: 0 rem(math.div($containerPadding, 2));
+			}
+		}
+	}
+}
+
+// Подключение базовых стилей, шаблонов (заготовок) и вспомогательных  классов
+// Для подключения/отключения конкретных стилей смотри base.scss
+@import "base";
+
+// Подключение стилей общих элементов проекта
+@import "common";
+
+.signup {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex: 1 1 auto;
+	background-color: #f4f5fc;
+
+	// .signup__container
+
+	&__container {
+		width: 100%;
+		@media (min-width: em(554)) {
+			display: flex;
+		}
+	}
+
+	// .signup__header
+
+	&__header {
+		flex: 1 1 rem(137.2);
+		background-color: $blueColor;
+		text-align: center;
+		padding: rem(10) rem(10);
+		@media (min-width: em(554)) {
+			display: flex;
+			align-items: flex-end;
+			justify-content: flex-end;
+			padding-right: rem(5.7);
+			padding-bottom: rem(21.98);
+		}
+	}
+
+	// .signup__title
+
+	&__title {
+		color: #fff;
+		font-family: "PT Sans";
+		@include adaptiveValue("font-size", 49, 39);
+		font-weight: 400;
+		letter-spacing: rem(0.5);
+
+		line-height: math.div(63, 49);
+		@media (min-width: em(554)) {
+			writing-mode: vertical-rl;
+			transform: rotate(-180deg);
+		}
+	}
+
+	// .signup__form-signup
+
+	&__form-signup {
+		flex: 1 1 rem(527.8);
+	}
+}
+.form-signup {
+	position: relative;
+	overflow: hidden;
+	background-color: #fff;
+	padding: rem(38.52) rem(20.8) rem(32.48) rem(22.5);
+	// .form-signup__header
+
+	// .form-signup__image
+
+	> * {
+		position: relative;
+		z-index: 2;
+	}
+
+	&__image {
+		display: inline-flex;
+		height: rem(411);
+		width: rem(411);
+		position: absolute;
+		bottom: percent(-56, 479);
+		right: percent(-104, 527.8);
+		z-index: 1;
+	}
+
+	&__header {
+		&:not(:last-child) {
+			margin-bottom: rem(20);
+		}
+	}
+
+	// .form-signup__title
+
+	&__title {
+		font-size: rem(22);
+		font-weight: 500;
+		line-height: math.div(26, 22);
+		letter-spacing: rem(-0.46);
+	}
+
+	// .form-signup__subtitle
+
+	&__subtitle {
+		line-height: math.div(16, 14);
+		font-weight: 300;
+	}
+
+	// .form-signup__body
+
+	&__body {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(rem(180), 1fr));
+		row-gap: rem(16);
+		column-gap: rem(14);
+	}
+
+	// .form-signup__field
+
+	&__field {
+		display: flex;
+		flex-direction: column;
+		&._form-error .form__error {
+			margin-top: rem(6);
+			color: #ff2828;
+			font-size: rem(12);
+		}
+	}
+
+	// .form-signup__label
+
+	&__label {
+		display: -webkit-box;
+		-webkit-line-clamp: 1;
+		-webkit-box-orient: vertical;
+		color: $grayColor;
+		font-size: rem(12);
+		line-height: math.div(14, 12);
+		font-weight: 300;
+		&:not(:last-child) {
+			margin-bottom: em(5, 12);
+		}
+	}
+
+	// .form-signup__input
+
+	&__input {
+		&::placeholder {
+			color: $mainColor;
+			line-height: math.div(16, 12);
+			font-weight: 400;
+		}
+	}
+
+	// .form-signup__select
+
+	&__select {
+	}
+
+	// .form-signup__options
+
+	&__options {
+	}
+
+	// .form-signup__footer
+
+	&__footer {
+		@include adaptiveValue("margin-top", 98, 30);
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: rem(15);
+	}
+
+	// .form-signup__login
+
+	&__login {
+		color: #000;
+		font-weight: 300;
+		font-size: rem(13);
+		line-height: math.div(15, 13);
+	}
+
+	// .form-signup__login-button
+
+	&__login-button {
+		color: $blueColor;
+		text-decoration: underline;
+		font-weight: 500;
+		@media (any-hover: hover) {
+			&:hover {
+				text-decoration: none;
+			}
+		}
+	}
+
+	// .form-signup__button
+
+	&__button {
+		padding: rem(7) rem(26) rem(7) rem(25);
+		color: #fff;
+		font-family: "PT Sans";
+		background-color: $blueColor;
+		transition: background-color 0.3s ease 0s;
+		max-width: rem(154);
+		@media (any-hover: hover) {
+			&:hover {
+				background-color: #363fe9;
+			}
+		}
+	}
+}
+.field-date-of-birth {
+	display: block;
+	// .field-date-of-birth__label
+
+	&__label {
+	}
+
+	// .field-date-of-birth__body
+
+	&__body {
+		display: flex;
+		justify-content: space-between;
+		gap: rem(9.8);
+		& .select {
+			flex: 1 1 auto;
+		}
+	}
+
+	// .field-date-of-birth__select
+
+	&__select {
+		flex: 1 0 100%;
+	}
+}
